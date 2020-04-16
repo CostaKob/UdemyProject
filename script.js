@@ -85,3 +85,5 @@ let appData = {
 for (let key in appData) {
     console.log("Все что есьб на сайте: " + key + " - " + appData[key]);
 }
+
+let y = 1; let x = y = 2; console.log(x);
