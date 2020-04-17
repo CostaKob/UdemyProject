@@ -30,9 +30,20 @@ let startButton = document.getElementById("start"),
     month = document.querySelector('.month-value'),
     day = document.querySelector('.day-value');
 
-let money, time;
+let money,
+    time,
+    expItemSum = 0;
+
+//turn off the buttons
+expensesItemBtn.disabled = true;
+optionalExpensesBtn.disabled = true;
+countBudgetBtn.disabled = true;
 
 startButton.addEventListener('click', function () {
+    //turn on buttons when start button clicked
+    expensesItemBtn.disabled = false;
+    optionalExpensesBtn.disabled = false;
+    countBudgetBtn.disabled = false;
 
     time = prompt("Введите дату в формате YYYY-MM-DD");
     money = +prompt("Ваш бюджет на месяц?", "");
@@ -49,7 +60,6 @@ startButton.addEventListener('click', function () {
 });
 
 expensesItemBtn.addEventListener('click', function () {
-    let sum = 0;
 
     for (let i = 0; i < expensesItem.length; i++) {
         let a = expensesItem[i].value,
@@ -59,13 +69,13 @@ expensesItemBtn.addEventListener('click', function () {
             a != '' && b != '' && a.length < 50) {
             console.log("done");
             appData.expenses[a] = b;
-            sum += +b;
+            expItemSum += +b;
         } else {
             console.log("Something wrong");
             i = i - 1;
         }
     }
-    expensesValue.textContent = sum;
+    expensesValue.textContent = expItemSum;
 });
 
 optionalExpensesBtn.addEventListener('click', function () {
@@ -79,7 +89,7 @@ optionalExpensesBtn.addEventListener('click', function () {
 countBudgetBtn.addEventListener('click', function () {
 
     if (appData.budget != undefined) {
-        appData.moneyPerDay = (appData.budget / 30).toFixed();
+        appData.moneyPerDay = ((appData.budget-expensesValue.textContent) / 30).toFixed();
         dayBudgetValue.textContent = appData.moneyPerDay;
 
         if (appData.moneyPerDay < 100) {
@@ -135,6 +145,10 @@ percent.addEventListener('input', function () {
         yearsavingsValue.textContent = appData.yearIncome.toFixed(1);
     }
 });
+
+// while (startButton.value == 'disabled') {
+//     expensesItemBtn.value = 'disabled';
+// }
 
 let appData = {
     budget: money,
