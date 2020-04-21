@@ -40,7 +40,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
     // Timer
 
-    let deadLine = '2020-04-19';
+    let deadLine = '2020-04-25';
 
     function getTimeRemaining(endTime) {
         let t = Date.parse(endTime) - Date.parse(new Date()),
@@ -126,49 +126,108 @@ window.addEventListener('DOMContentLoaded', function () {
         input = form.getElementsByTagName('input'),
         statusMessage = document.createElement('div');
 
-        statusMessage.classList.add('status');
+    statusMessage.classList.add('status');
 
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        form.appendChild(statusMessage);
+    function sendForm(elem) {
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            form.appendChild(statusMessage);
+            let formData = new FormData(form);
 
-        let request = new XMLHttpRequest();
-        request.open('POST', 'server.php');
-        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-        let formData = new FormData(form);
-        request.send(formData);
+            function postData(data) {
+                return new Promise(function (resolve, reject) {
+
+                    let request = new XMLHttpRequest();
+
+                    request.open('POST', 'server.php');
+
+                    request.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+
+                    let data = {};
+                    formData.forEach(function (value, key) {
+                        data[key] = value;
+                    });
+                    let json = JSON.stringify(data);
+
+                    request.onreadystatechange = function () {
+                        if (request.readyState < 4) {
+                            resolve();
+                        } else if (request.readyState === 4) {
+                            if (request.status == 200) {
+                                resolve();
+                            } else {
+                                reject();
+                            }
+                        }
+                    };
+                    request.send(json);
+                });
+            }
+
+            function clearInput() {
+                for (let i = 0; i < input.length; i++) {
+                    input[i].value = '';
+                }
+            }
+
+            postData(formData)
+                .then(() => statusMessage.innerHTML = message.loading)
+                .then(() => statusMessage.innerHTML = message.success)
+                .catch(() => statusMessage.innerHTML = message.failure)
+                .then(clearInput);
+        });
+
+    }
+    sendForm(form);
+
+    // slider
+
+    let slideIndex = 1,
+        slides = document.querySelectorAll('.slider-item'),
+        prev = document.querySelector('.prev'),
+        next = document.querySelector('.next'),
+        dotsWrap = document.querySelector('.slider-dots'),
+        dots = document.querySelectorAll('.dot');
+
+    showSlides(slideIndex);
+
+    function showSlides(n) {
+
+        if (n > slides.length) {
+            slideIndex = 1;
+        }
+        if (n < 1) {
+            slideIndex = slides.length;
+        }
+
+        slides.forEach((item) => item.style.display = 'none');
+        dots.forEach((item) => item.classList.remove('dot-active'));
+
+        slides[slideIndex - 1].style.display = 'block';
+        dots[slideIndex - 1].classList.add('dot-active');
+    }
+
+    function plusSlides(n) {
+        showSlides(slideIndex += n);
+    }
+
+    function currentSlide(n) {
+        showSlides(slideIndex = n);
+    }
+
+    prev.addEventListener('click', function () {
+        plusSlides(-1);
+    });
+    next.addEventListener('click', function () {
+        plusSlides(1);
+    });
+
+    dotsWrap.addEventListener('click', function (event) {
+        for (let i = 0; i < dots.length + 1; i++) {
+            if (event.target.classList.contains('dot') && event.target == dots[i - 1]) {
+                currentSlide(i);
+            }
+        }
     });
 });
-
-// Второе задание
-
-// let age = document.getElementById('age');
- 
-// function showUser(surname, name) {
-//          alert("Пользователь " + surname + " " + name + ", его возраст " + this.value);
-// }
- 
-// showUser.apply(age, ["Горький","Максим"]);
-
-// class Options {
-// 	constructor(height, width, bg, fontSize, textAlign) {
-// 		this.height = height;
-// 		this.width = width;
-// 		this.bg = bg;
-// 		this.fontSize = fontSize;
-// 		this.textAlign = textAlign;
-// 	}
-
-// 	createDiv() {
-// 		let elem = document.createElement('div');
-// 		document.body.appendChild(elem);
-// 		let param = `height:${this.height}px; width:${this.width}px; background-color:${this.bg}; font-size:${this.fontSize}px; text-align:${this.textAlign}`;
-// 		elem.style.cssText = param;
-// 	}
-// }
-
-// const item = new Options(300, 350, "red", 14, "center");
-
-// item.createDiv();
-
