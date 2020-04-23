@@ -1,5 +1,5 @@
 {
-  "name": "js-starter-code",
+  "name": "costa",
   "version": "1.0.0",
   "description": "JS Starter Code",
   "main": "script.js",
@@ -13,5 +13,13 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CostaKob/UdemyProject.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CostaKob/UdemyProject/issues"
+  },
+  "homepage": "https://github.com/CostaKob/UdemyProject#readme"
 }
