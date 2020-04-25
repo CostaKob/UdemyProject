@@ -20,3 +20,15 @@ window.addEventListener('DOMContentLoaded', function () {
     tabs();
     timer();
 });
+
+let obj = {
+    number: 5,
+    sayNumber: function() {
+        say = () => {
+            console.log(this);
+        }   
+    say();
+    }
+};
+
+obj.sayNumber();
